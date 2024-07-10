@@ -9,12 +9,15 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "format": "prettier --write ."
+    "format": "prettier --write './**/*.+(js|ts|jsx|tsx)'",
+    "prepare": "husky"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
     "eslint-config-prettier": "^9.1.0",
@@ -28,6 +31,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
+    "husky": "^9.0.11",
     "prettier": "^3.3.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
