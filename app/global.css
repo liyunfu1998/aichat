@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{
+  .btn{
+  @apply h-[50px] rounded-xl items-center flex-row px-2.5 
+}
+
+.loading-overlay {
+  @apply absolute inset-0 flex items-center justify-center z-[1000]
+}
+
+.page-container{
+  @apply flex-1 bg-light
+}
+}
