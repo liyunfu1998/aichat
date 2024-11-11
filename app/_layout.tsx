@@ -1,7 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import { Slot } from "expo-router";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
-
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 const tokenCache = {
   async getToken(key: string) {
     try {
@@ -45,7 +45,9 @@ export default function RootLayout() {
   return (
     <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey!}>
       <ClerkLoaded>
-        <Slot />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Slot />
+        </GestureHandlerRootView>
       </ClerkLoaded>
     </ClerkProvider>
   );

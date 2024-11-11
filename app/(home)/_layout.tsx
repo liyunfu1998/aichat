@@ -9,13 +9,14 @@ export default function Layout() {
           headerShown: false,
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="(drawer)/(chat)/new"
         options={{
           title: "新对话",
           headerBackTitle: "返回",
         }}
-      />
+      /> */}
+      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
     </Stack>
   );
 }
