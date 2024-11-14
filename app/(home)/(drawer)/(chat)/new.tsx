@@ -1,5 +1,5 @@
 import { defaultStyles } from "@/constants/Styles";
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import {
   View,
   Text,
@@ -18,62 +18,11 @@ import MessageIdeas from "@/components/MessageIdeas";
 import { FlashList } from "@shopify/flash-list";
 import ChatMessage from "@/components/ChatMessage";
 import { Role } from "@/utils/Interfaces";
+import { useMMKVString } from "react-native-mmkv";
+import { keyStorage, storage } from "@/utils/Storage";
 
+// URL：https://api.siliconflow.cn/v1
 const MockMessages = [
-  {
-    role: Role.Bot,
-    content: "Hello, how can I help you today?",
-  },
-  {
-    role: Role.User,
-    content:
-      "I want to learn about the stock market I want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock market",
-  },
-  {
-    role: Role.Bot,
-    content: "Hello, how can I help you today?",
-  },
-  {
-    role: Role.User,
-    content:
-      "I want to learn about the stock market I want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock market",
-  },
-  {
-    role: Role.Bot,
-    content: "Hello, how can I help you today?",
-  },
-  {
-    role: Role.User,
-    content:
-      "I want to learn about the stock market I want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock market",
-  },
-  {
-    role: Role.Bot,
-    content: "Hello, how can I help you today?",
-  },
-  {
-    role: Role.User,
-    content:
-      "I want to learn about the stock market I want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock market",
-  },
-  {
-    role: Role.Bot,
-    content: "Hello, how can I help you today?",
-  },
-  {
-    role: Role.User,
-    content:
-      "I want to learn about the stock market I want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock market",
-  },
-  {
-    role: Role.Bot,
-    content: "Hello, how can I help you today?",
-  },
-  {
-    role: Role.User,
-    content:
-      "I want to learn about the stock market I want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock market",
-  },
   {
     role: Role.Bot,
     content: "Hello, how can I help you today?",
@@ -86,9 +35,17 @@ const MockMessages = [
 ];
 export default function New() {
   const { signOut } = useAuth();
-  const [gptVersion, setGptVersion] = useState("3.5");
-  const [messages, setMessages] = useState<any[]>(MockMessages);
+  const [messages, setMessages] = useState<any[]>([]);
   const [height, setHeight] = useState(0);
+
+  const [key, setKey] = useMMKVString("apikey", keyStorage);
+  const [organization, setOrganization] = useMMKVString("org", keyStorage);
+
+  const [gptVersion, setGptVersion] = useMMKVString("gptVersion", storage);
+
+  if (!key || key === "" || !organization || organization === "") {
+    return <Redirect href={"/(home)/(modal)/settings"} />;
+  }
   const getCompletion = async (text: string) => {
     setMessages([...messages, text]);
   };
