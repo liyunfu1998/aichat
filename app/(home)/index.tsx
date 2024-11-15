@@ -17,7 +17,7 @@ export default function Page() {
       }
       timerRef.current = setTimeout(() => {
         router.replace("/(home)/(drawer)/(chat)/new");
-      }, 5000);
+      }, 2000);
     }
     return () => {
       if (timerRef.current) {

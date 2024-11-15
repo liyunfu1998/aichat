@@ -15,68 +15,55 @@ import {
 import { useMMKVString } from "react-native-mmkv";
 const Page = () => {
   const [key, setKey] = useMMKVString("apikey", keyStorage);
-  const [organization, setOrganization] = useMMKVString("org", keyStorage);
 
   const [apiKey, setApiKey] = useState("");
-  const [org, setOrg] = useState("");
   const router = useRouter();
 
   const { signOut } = useAuth();
 
   const saveApiKey = async () => {
     setKey(apiKey);
-    setOrganization(org);
     router.navigate("/(home)/(drawer)");
   };
 
   const removeApiKey = async () => {
     setKey("");
-    setOrganization("");
   };
 
   return (
     <View style={styles.container}>
       {key && key !== "" && (
         <>
-          <Text style={styles.label}>You are all set!</Text>
+          <Text style={styles.label}>你已经设置好了！</Text>
           <TouchableOpacity
             style={[defaultStyles.btn, { backgroundColor: Colors.primary }]}
             onPress={removeApiKey}
           >
-            <Text style={styles.buttonText}>Remove API Key</Text>
+            <Text style={styles.buttonText}>删除配置</Text>
           </TouchableOpacity>
         </>
       )}
 
       {(!key || key === "") && (
         <>
-          <Text style={styles.label}>API Key & Organization:</Text>
+          <Text style={styles.label}>API Key:</Text>
           <TextInput
             style={styles.input}
             value={apiKey}
             onChangeText={setApiKey}
-            placeholder="Enter your API key"
+            placeholder="填写你的API Key"
             autoCorrect={false}
             autoCapitalize="none"
           />
-          <TextInput
-            style={styles.input}
-            value={org}
-            onChangeText={setOrg}
-            placeholder="Your organization"
-            autoCorrect={false}
-            autoCapitalize="none"
-          />
-
           <TouchableOpacity
             style={[defaultStyles.btn, { backgroundColor: Colors.primary }]}
             onPress={saveApiKey}
           >
-            <Text style={styles.buttonText}>Save API Key</Text>
+            <Text style={styles.buttonText}>保存</Text>
           </TouchableOpacity>
         </>
       )}
-      <Button title="Sign Out" onPress={() => signOut()} color={Colors.grey} />
+      <Button title="退出登录" onPress={() => signOut()} color={Colors.grey} />
     </View>
   );
 };
@@ -91,6 +78,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
+    height: 50,
     borderWidth: 1,
     borderColor: Colors.primary,
     borderRadius: 5,

@@ -1,7 +1,7 @@
 import { Message, Role } from "@/utils/Interfaces";
 import { useUser } from "@clerk/clerk-expo";
 import { StyleSheet, Image, View, Text } from "react-native";
-
+import Markdown from "react-native-markdown-display";
 const ChatMessage = ({
   content,
   role,
@@ -22,7 +22,17 @@ const ChatMessage = ({
       ) : (
         <Image source={{ uri: user?.imageUrl }} style={styles.avatar} />
       )}
-      <Text style={styles.text}>{content}</Text>
+      <View
+        style={{
+          flex: 1,
+          padding: 4,
+          paddingHorizontal: 10,
+          borderRadius: 15,
+          backgroundColor: "#f4f4f4",
+        }}
+      >
+        <Markdown>{content}</Markdown>
+      </View>
     </View>
   );
 };

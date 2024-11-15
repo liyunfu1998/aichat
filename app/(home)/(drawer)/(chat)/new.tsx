@@ -11,7 +11,7 @@ import {
   LayoutChangeEvent,
 } from "react-native";
 import HeaderDropDown from "@/components/HeaderDropDown";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessageInput from "@/components/MessageInput";
 import { useAuth } from "@clerk/clerk-expo";
 import MessageIdeas from "@/components/MessageIdeas";
@@ -20,53 +20,104 @@ import ChatMessage from "@/components/ChatMessage";
 import { Role } from "@/utils/Interfaces";
 import { useMMKVString } from "react-native-mmkv";
 import { keyStorage, storage } from "@/utils/Storage";
+import EventSource from "react-native-sse";
+import { GPTs } from "@/constants/GPTs";
 
-// URL：https://api.siliconflow.cn/v1
-const MockMessages = [
-  {
-    role: Role.Bot,
-    content: "Hello, how can I help you today?",
-  },
-  {
-    role: Role.User,
-    content:
-      "I want to learn about the stock market I want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock marketI want to learn about the stock market",
-  },
-];
+const siliconFlowUrl = "https://api.siliconflow.cn/v1/chat/completions";
 export default function New() {
-  const { signOut } = useAuth();
   const [messages, setMessages] = useState<any[]>([]);
   const [height, setHeight] = useState(0);
-
   const [key, setKey] = useMMKVString("apikey", keyStorage);
-  const [organization, setOrganization] = useMMKVString("org", keyStorage);
 
   const [gptVersion, setGptVersion] = useMMKVString("gptVersion", storage);
 
-  if (!key || key === "" || !organization || organization === "") {
+  if (!key || key === "") {
     return <Redirect href={"/(home)/(modal)/settings"} />;
   }
-  const getCompletion = async (text: string) => {
-    setMessages([...messages, text]);
+
+  const getCompletion = async (message: string) => {
+    if (messages.length === 0) {
+      /// 稍后创建聊天，存储到数据库
+    }
+    const prevMessages = [...messages];
+    setMessages([
+      ...messages,
+      {
+        content: message,
+        role: Role.User,
+      },
+      {
+        content: "",
+        role: Role.Bot,
+      },
+    ]);
+
+    const es = new EventSource(siliconFlowUrl, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${key}`,
+      },
+      method: "POST",
+      body: JSON.stringify({
+        model: gptVersion || "deepseek-ai/DeepSeek-V2.5",
+        messages: [...prevMessages, { role: "user", content: message }],
+        max_tokens: 600,
+        n: 1,
+        temperature: 0.7,
+        stream: true,
+      }),
+      pollingInterval: 0, // Remember to set pollingInterval to 0 to disable reconnections
+    });
+
+    es?.addEventListener("open", () => {
+      console.log("SSE connection opened.");
+    });
+
+    es?.addEventListener("message", (event) => {
+      if (event.data !== "[DONE]") {
+        const data = JSON.parse(event?.data || "");
+
+        if (data.choices[0].delta.content !== undefined) {
+          if (messages.length > 0) {
+            setMessages((prevMessages) => {
+              prevMessages[prevMessages.length - 1].content +=
+                data.choices[0].delta.content;
+              return [...prevMessages];
+            });
+          } else {
+            setMessages((prevMessages) => {
+              if (prevMessages.length > 0) {
+                prevMessages[prevMessages.length - 1].content +=
+                  data.choices[0].delta.content;
+              } else {
+                prevMessages.push({
+                  content: data.choices[0].delta.content,
+                  role: Role.Bot,
+                });
+              }
+              return [...prevMessages];
+            });
+          }
+        }
+      }
+    });
   };
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
     setHeight(height / 2);
   };
+
   return (
     <View style={defaultStyles.pageContainer}>
       <Stack.Screen
         options={{
           headerTitle: () => (
             <HeaderDropDown
-              title={gptVersion === "3.5" ? "ChatGPT 3.5" : "ChatGPT 4"}
+              title={gptVersion! || "请选择大模型"}
               selected={gptVersion}
               onSelect={(key) => setGptVersion(key)}
-              items={[
-                { key: "3.5", title: "ChatGPT 3.5", icon: "bolt" },
-                { key: "4", title: "ChatGPT 4", icon: "sparkles" },
-              ]}
+              items={GPTs}
             />
           ),
         }}
