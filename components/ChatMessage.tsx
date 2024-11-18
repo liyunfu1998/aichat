@@ -1,7 +1,20 @@
 import Colors from "@/constants/Colors";
+import {
+  copyImageToClipboard,
+  downloadAndSaveImage,
+  shareImage,
+} from "@/utils/Image";
 import { Message, Role } from "@/utils/Interfaces";
-import { StyleSheet, Image, View, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  View,
+  ActivityIndicator,
+  Pressable,
+} from "react-native";
 import Markdown from "react-native-markdown-display";
+import * as ContextMenu from "zeego/context-menu";
+
 const ChatMessage = ({
   content,
   role,
@@ -9,6 +22,23 @@ const ChatMessage = ({
   prompt,
   loading,
 }: Message & { loading?: boolean }) => {
+  const contextItems = [
+    {
+      title: "Copy",
+      systemIcon: "doc.on.doc",
+      action: () => copyImageToClipboard(imageUrl!),
+    },
+    {
+      title: "Save to Photos",
+      systemIcon: "arrow.down.to.line",
+      action: () => downloadAndSaveImage(imageUrl!),
+    },
+    {
+      title: "Share",
+      systemIcon: "square.and.arrow.up",
+      action: () => shareImage(imageUrl!),
+    },
+  ];
   return (
     <View style={styles.row}>
       {role === Role.Bot ? (
@@ -32,7 +62,34 @@ const ChatMessage = ({
       ) : (
         <>
           {content === "" && imageUrl ? (
-            <Image source={{ uri: imageUrl }} style={styles.previewImage} />
+            <ContextMenu.Root>
+              <ContextMenu.Trigger>
+                <Pressable>
+                  <Image
+                    source={{ uri: imageUrl }}
+                    style={styles.previewImage}
+                  />
+                </Pressable>
+              </ContextMenu.Trigger>
+              <ContextMenu.Content
+                loop
+                alignOffset={10}
+                avoidCollisions
+                collisionPadding={10}
+              >
+                {contextItems.map((item, index) => (
+                  <ContextMenu.Item key={item.title} onSelect={item.action}>
+                    <ContextMenu.ItemTitle>{item.title}</ContextMenu.ItemTitle>
+                    <ContextMenu.ItemIcon
+                      ios={{
+                        name: item.systemIcon,
+                        pointSize: 18,
+                      }}
+                    />
+                  </ContextMenu.Item>
+                ))}
+              </ContextMenu.Content>
+            </ContextMenu.Root>
           ) : (
             <View
               style={{
