@@ -10,7 +10,7 @@ import {
   LayoutChangeEvent,
 } from "react-native";
 import HeaderDropDown from "@/components/HeaderDropDown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MessageInput from "@/components/MessageInput";
 import { FlashList } from "@shopify/flash-list";
 import ChatMessage from "@/components/ChatMessage";
@@ -26,7 +26,10 @@ export default function Dalle() {
   const [messages, setMessages] = useState<any[]>([]);
   const [key, setKey] = useMMKVString("apikey", keyStorage);
   const [working, setWorking] = useState(false);
-  const [gptVersion, setGptVersion] = useMMKVString("gptVersion", storage);
+  const [gptVersion, setGptVersion] = useMMKVString(
+    "generateImageGPT",
+    storage
+  );
 
   if (!key || key === "") {
     return <Redirect href={"/(home)/(modal)/settings"} />;
