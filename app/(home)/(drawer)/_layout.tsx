@@ -104,7 +104,7 @@ export default function Layout() {
         name="(chat)/new"
         getId={() => Math.random().toString()}
         options={{
-          title: "新对话",
+          title: "对话",
           drawerIcon: () => (
             <View style={[styles.item, { backgroundColor: "#000" }]}>
               <Image
@@ -131,7 +131,7 @@ export default function Layout() {
         name="dalle"
         getId={() => Math.random().toString()}
         options={{
-          title: "Dall⚡️E",
+          title: "生图",
           drawerIcon: () => (
             <View style={[styles.item, { backgroundColor: "#000" }]}>
               <Image

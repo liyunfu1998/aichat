@@ -1,6 +1,6 @@
+import Colors from "@/constants/Colors";
 import { Message, Role } from "@/utils/Interfaces";
-import { useUser } from "@clerk/clerk-expo";
-import { StyleSheet, Image, View, Text } from "react-native";
+import { StyleSheet, Image, View, ActivityIndicator } from "react-native";
 import Markdown from "react-native-markdown-display";
 const ChatMessage = ({
   content,
@@ -9,7 +9,6 @@ const ChatMessage = ({
   prompt,
   loading,
 }: Message & { loading?: boolean }) => {
-  const { user } = useUser();
   return (
     <View style={styles.row}>
       {role === Role.Bot ? (
@@ -20,19 +19,35 @@ const ChatMessage = ({
           />
         </View>
       ) : (
-        <Image source={{ uri: user?.imageUrl }} style={styles.avatar} />
+        <Image
+          source={{ uri: "https://galaxies.dev/img/meerkat_2.jpg" }}
+          style={styles.avatar}
+        />
       )}
-      <View
-        style={{
-          flex: 1,
-          padding: 4,
-          paddingHorizontal: 10,
-          borderRadius: 15,
-          backgroundColor: "#f4f4f4",
-        }}
-      >
-        <Markdown>{content}</Markdown>
-      </View>
+
+      {loading ? (
+        <View style={styles.loading}>
+          <ActivityIndicator color={Colors.primary} size="small" />
+        </View>
+      ) : (
+        <>
+          {content === "" && imageUrl ? (
+            <Image source={{ uri: imageUrl }} style={styles.previewImage} />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                padding: 4,
+                paddingHorizontal: 10,
+                borderRadius: 15,
+                backgroundColor: "#f4f4f4",
+              }}
+            >
+              <Markdown>{content}</Markdown>
+            </View>
+          )}
+        </>
+      )}
     </View>
   );
 };

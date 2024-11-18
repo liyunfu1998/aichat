@@ -35,3 +35,31 @@ export const GPTs = [
     icon: "bolt",
   },
 ];
+
+export const GenerateImageGPTs = [
+  {
+    key: "stabilityai/stable-diffusion-3-5-large",
+    title: "stabilityai/stable-diffusion-3-5-large",
+    icon: "bolt",
+  },
+  {
+    key: "black-forest-labs/FLUX.1-schnell",
+    title: "black-forest-labs/FLUX.1-schnell",
+    icon: "sparkles",
+  },
+  {
+    key: "stabilityai/stable-diffusion-3-medium",
+    title: "stabilityai/stable-diffusion-3-medium",
+    icon: "bolt",
+  },
+  {
+    key: "stabilityai/stable-diffusion-xl-base-1.0",
+    title: "stabilityai/stable-diffusion-xl-base-1.0",
+    icon: "bolt",
+  },
+  {
+    key: "stabilityai/stable-diffusion-2-1",
+    title: "stabilityai/stable-diffusion-2-1",
+    icon: "bolt",
+  },
+];
