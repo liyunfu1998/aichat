@@ -5,6 +5,7 @@ import {
   shareImage,
 } from "@/utils/Image";
 import { Message, Role } from "@/utils/Interfaces";
+import { Link } from "expo-router";
 import {
   StyleSheet,
   Image,
@@ -64,12 +65,19 @@ const ChatMessage = ({
           {content === "" && imageUrl ? (
             <ContextMenu.Root>
               <ContextMenu.Trigger>
-                <Pressable>
-                  <Image
-                    source={{ uri: imageUrl }}
-                    style={styles.previewImage}
-                  />
-                </Pressable>
+                <Link
+                  href={`/(home)/(modal)/image/${encodeURIComponent(
+                    imageUrl
+                  )}?prompt=${encodeURIComponent(prompt!)}`}
+                  asChild
+                >
+                  <Pressable>
+                    <Image
+                      source={{ uri: imageUrl }}
+                      style={styles.previewImage}
+                    />
+                  </Pressable>
+                </Link>
               </ContextMenu.Trigger>
               <ContextMenu.Content
                 loop
