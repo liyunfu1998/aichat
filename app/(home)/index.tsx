@@ -11,14 +11,18 @@ export default function Page() {
   const router = useRouter();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
-    if (isSignedIn) {
-      if (router.canGoBack()) {
-        return;
-      }
-      timerRef.current = setTimeout(() => {
-        router.replace("/(home)/(drawer)/(chat)/new");
-      }, 2000);
-    }
+    // if (isSignedIn) {
+    //   if (router.canGoBack()) {
+    //     return;
+    //   }
+    //   timerRef.current = setTimeout(() => {
+    //     router.replace("/(home)/(drawer)/(chat)/new");
+    //   }, 2000);
+    // }
+    timerRef.current = setTimeout(() => {
+      router.replace("/(home)/(drawer)/(chat)/new");
+    }, 2000);
+
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
